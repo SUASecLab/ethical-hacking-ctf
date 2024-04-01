@@ -1,0 +1,99 @@
+{{define "body"}}
+
+<body>
+    <div class="container" style="margin-top:3rem;">
+        <h1>capture the flag!</h1>
+
+        {{template "successMessage" .}}
+        {{template "errorMessage" .}}
+
+        <h3>Overview about collected flags:</h3>
+        <br>
+
+        <div class="accordion" id="accordionCTF">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                        Bash CTF
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionCTF">
+                    <div class="accordion-body">
+                        Collected flags:<br>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Flag</th>
+                                    <th scope="col">Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{range .BashFlags}}
+                                <tr>
+                                    <td>{{.Flag}}</td>
+                                    <td>{{.Description}}</td>
+                                </tr>
+                                {{end}}
+                            </tbody>
+                        </table>
+                        <br>
+                        <p>Progress:</p>
+                        {{template "progressBar" (arr .BashProgress)}}
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        SUASploitable CTF
+                    </button>
+                </h2>
+                <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionCTF">
+                    <div class="accordion-body">
+                        Collected flags:<br>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Flag</th>
+                                    <th scope="col">Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{range .SUASploitableFlags}}
+                                <tr>
+                                    <td>{{.Flag}}</td>
+                                    <td>{{.Description}}</td>
+                                </tr>
+                                {{end}}
+                            </tbody>
+                        </table>
+                        <br>
+                        <p>Progress:</p>
+                        {{template "progressBar" (arr .SUASploitableProgress)}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <h3>Claim flag:</h3>
+        <br>
+        <form method="POST" action="./">
+            <div class="mb-3">
+                <label for="flagInput" class="form-label">Flag:</label>
+                <input type="text" class="form-control" id="flagInput" name="flagInput">
+            </div>
+            <div class="mb-3">
+                <label for="flagTypeSelect" class="form-label">Flag type:</label>
+                <select class="form-select" id="flagTypeSelect" name="flagTypeSelect">
+                    <option value="bash">Bash</option>
+                    <option value="suasploitable">SUASploitable</option>
+                </select>
+            </div>
+            <input type="hidden" id="token" name="token" value="{{.Token}}" />
+            <button type="submit" class="btn btn-primary mb-3">Submit flag</button>
+        </form>
+    </div>
+</body>
+{{end}}

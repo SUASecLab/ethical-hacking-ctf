@@ -1,0 +1,17 @@
+{{define "progressBar"}}
+{{ $progress := index . 0}}
+
+{{if lt $progress 50}}
+<div class="progress" role="progressbar" aria-valuenow="{{$progress}}" aria-valuemin="0" aria-valuemax="100">
+    <div class="progress-bar bg-danger" style="width: {{$progress}}%">{{$progress}}%</div>
+</div>
+{{else if lt $progress 80}}
+<div class="progress" role="progressbar" aria-valuenow="{{$progress}}" aria-valuemin="0" aria-valuemax="100">
+    <div class="progress-bar bg-warning text-dark" style="width: {{$progress}}%">{{$progress}}%</div>
+</div>
+{{else}}
+<div class="progress" role="progressbar" aria-valuenow="{{$progress}}" aria-valuemin="0" aria-valuemax="100">
+    <div class="progress-bar bg-success" style="width: {{$progress}}%">{{$progress}}%</div>
+</div>
+{{end}}
+{{end}}
