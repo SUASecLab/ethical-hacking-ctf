@@ -1,4 +1,4 @@
-FROM golang:1.22-alpine AS golang-builder
+FROM golang:1.23-alpine AS golang-builder
 
 RUN addgroup -S ctf && adduser -S ctf -G ctf
 
