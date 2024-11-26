@@ -61,7 +61,7 @@ func createReturnDataStructure(token, successMessage, errorMessage string) Index
 							numberOfCollectedSUASploitableFlags := 0
 							for _, flag := range allFlags {
 								// only count available flags
-								if slices.Contains(user.AvailableFlags, flag.Flag) {
+								if user.AvailableFlags != nil && slices.Contains(user.AvailableFlags, flag.Flag) {
 									switch flag.Type {
 									case "bash":
 										numberOfBashFlags += 1
