@@ -32,7 +32,7 @@ func createReturnDataStructure(token, successMessage, errorMessage string) Index
 			user, err := getUserByUuid(usersCollection, uuid)
 			if err != nil {
 				log.Println("Can not get user: ", err)
-				errorMessage = "Can not getch user information"
+				errorMessage = "Can not fetch user information"
 			} else {
 				// flags collected by user are stored in user.CollectedFlags
 				// next, fetch all flags -> connect to db first
@@ -60,20 +60,23 @@ func createReturnDataStructure(token, successMessage, errorMessage string) Index
 							numberOfCollectedBashFlags := 0
 							numberOfCollectedSUASploitableFlags := 0
 							for _, flag := range allFlags {
-								switch flag.Type {
-								case "bash":
-									numberOfBashFlags += 1
-								case "suasploitable":
-									numberOfSUASploitableFlags += 1
-								}
-								if slices.Contains(user.CollectedFlags, flag.Flag) {
+								// only count available flags
+								if slices.Contains(user.AvailableFlags, flag.Flag) {
 									switch flag.Type {
 									case "bash":
-										bashFlags = append(bashFlags, flag)
-										numberOfCollectedBashFlags += 1
+										numberOfBashFlags += 1
 									case "suasploitable":
-										suasploitableFlags = append(suasploitableFlags, flag)
-										numberOfCollectedSUASploitableFlags += 1
+										numberOfSUASploitableFlags += 1
+									}
+									if slices.Contains(user.CollectedFlags, flag.Flag) {
+										switch flag.Type {
+										case "bash":
+											bashFlags = append(bashFlags, flag)
+											numberOfCollectedBashFlags += 1
+										case "suasploitable":
+											suasploitableFlags = append(suasploitableFlags, flag)
+											numberOfCollectedSUASploitableFlags += 1
+										}
 									}
 								}
 							}
@@ -88,19 +91,11 @@ func createReturnDataStructure(token, successMessage, errorMessage string) Index
 						}
 					}
 				}
-				defer func() {
-					if err := ctfClient.Disconnect(context.TODO()); err != nil {
-						log.Println("Can not disconnect from database:", err)
-					}
-				}()
+				defer disconnect(ctfClient)
 			}
 		}
 
-		defer func() {
-			if err := usersClient.Disconnect(context.TODO()); err != nil {
-				log.Println("Can not disconnect from database:", err)
-			}
-		}()
+		defer disconnect(usersClient)
 	}
 
 	data := IndexData{
