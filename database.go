@@ -21,3 +21,9 @@ func connect(collection string) (context.Context, context.CancelFunc, *mongo.Cli
 
 	return ctx, cancel, client, client.Database(mongoDBName).Collection(collection), true
 }
+
+func disconnect(client *mongo.Client) {
+	if err := client.Disconnect(context.TODO()); err != nil {
+		log.Println("Can not disconnect from database:", err)
+	}
+}

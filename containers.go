@@ -6,6 +6,7 @@ type User struct {
 	Email          string   `json:"email"`
 	VisitCardUrl   string   `json:"visitCardUrl"`
 	Tags           []string `json:"tags"`
+	AvailableFlags []string `json:"availableFlags"`
 	CollectedFlags []string `json:"collectedFlags"`
 }
 
