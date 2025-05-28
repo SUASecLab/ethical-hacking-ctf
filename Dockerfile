@@ -9,7 +9,7 @@ RUN go get
 RUN go build
 
 RUN apk add wget unzip
-RUN wget https://github.com/twbs/bootstrap/releases/download/v5.3.3/bootstrap-5.3.3-dist.zip
+RUN wget https://github.com/twbs/bootstrap/releases/download/v5.3.6/bootstrap-5.3.6-dist.zip
 RUN unzip bootstrap-*.zip
 RUN mv bootstrap-*-dist static
 
