@@ -12,8 +12,10 @@ import (
 func createReturnDataStructure(token, successMessage, errorMessage string) IndexData {
 	bashFlags := []Flag{}
 	suasploitableFlags := []Flag{}
+	bonusFlags := []Flag{}
 	var bashProgress float64 = 0.0
 	var suasploitableProgress float64 = 0.0
+	var bonusProgress float64 = 0.0
 
 	// get uuid
 	uuid, success := getUuidFromToken(token)
@@ -57,17 +59,24 @@ func createReturnDataStructure(token, successMessage, errorMessage string) Index
 							// furthermore count the number of total and collected flags
 							numberOfBashFlags := 0
 							numberOfSUASploitableFlags := 0
+							numberOfBonusFlags := 0
 							numberOfCollectedBashFlags := 0
 							numberOfCollectedSUASploitableFlags := 0
+							numberOfCollectedBonusFlags := 0
 							for _, flag := range allFlags {
-								// only count available flags
+								// Create union of flags and available flags for that user
 								if user.AvailableFlags != nil && slices.Contains(user.AvailableFlags, flag.Flag) {
+									// Count flags
 									switch flag.Type {
 									case "bash":
 										numberOfBashFlags += 1
 									case "suasploitable":
 										numberOfSUASploitableFlags += 1
+									case "bonus":
+										numberOfBonusFlags += 1
 									}
+
+									// Check for each flag if the flag was collected
 									if slices.Contains(user.CollectedFlags, flag.Flag) {
 										switch flag.Type {
 										case "bash":
@@ -76,17 +85,23 @@ func createReturnDataStructure(token, successMessage, errorMessage string) Index
 										case "suasploitable":
 											suasploitableFlags = append(suasploitableFlags, flag)
 											numberOfCollectedSUASploitableFlags += 1
+										case "bonus":
+											bonusFlags = append(bonusFlags, flag)
+											numberOfCollectedBonusFlags += 1
 										}
 									}
 								}
 							}
 
-							// calculate progress
+							// Calculate progress by dividing collected flags by available flags per CtF
 							if numberOfBashFlags != 0 {
 								bashProgress = (float64(numberOfCollectedBashFlags) / float64(numberOfBashFlags) * 100)
 							}
 							if numberOfSUASploitableFlags != 0 {
 								suasploitableProgress = (float64(numberOfCollectedSUASploitableFlags) / float64(numberOfSUASploitableFlags) * 100)
+							}
+							if numberOfBonusFlags != 0 {
+								bonusProgress = (float64(numberOfCollectedBonusFlags) / float64(numberOfBonusFlags) * 100)
 							}
 						}
 					}
@@ -104,8 +119,10 @@ func createReturnDataStructure(token, successMessage, errorMessage string) Index
 		ErrorMessage:          errorMessage,
 		BashProgress:          int(math.RoundToEven(bashProgress)),
 		SUASploitableProgress: int(math.RoundToEven(suasploitableProgress)),
+		BonusProgress:         int(math.RoundToEven(bonusProgress)),
 		BashFlags:             bashFlags,
 		SUASploitableFlags:    suasploitableFlags,
+		BonusFlags:            bonusFlags,
 	}
 	return data
 }

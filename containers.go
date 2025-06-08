@@ -22,6 +22,8 @@ type IndexData struct {
 	ErrorMessage          string
 	BashProgress          int
 	SUASploitableProgress int
+	BonusProgress         int
 	BashFlags             []Flag
 	SUASploitableFlags    []Flag
+	BonusFlags            []Flag
 }

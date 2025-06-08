@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"slices"
+	"strings"
 
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -23,7 +24,34 @@ func addFlagToUser(w http.ResponseWriter, token, flagIdentifier, flagInput strin
 
 	// 2. search flag
 	var flag Flag
-	err := ctfCollection.FindOne(context.TODO(), bson.D{{Key: "flag", Value: flagIdentifier}}).Decode(&flag)
+	var err error
+
+	// If the flag is prefixed with suasploitable,
+	// it could be a bonus flag
+	if strings.HasPrefix(flagIdentifier, "suasploitable") {
+		// Create the identifier the flag would have if it was a bonus flag
+		bonusFlagIdentifier := "bonus-" + flagInput
+
+		// Search for matching suasploitable and bonus flags
+		err = ctfCollection.FindOne(context.TODO(),
+			bson.D{{
+				Key: "flag",
+				Value: bson.D{{
+					Key:   "$in",
+					Value: bson.A{flagIdentifier, bonusFlagIdentifier},
+				}},
+			}}).Decode(&flag)
+
+		// Check if flag is bonus flag
+		if flag.Type == "bonus" {
+			// Use bonus flag identifier from now on
+			flagIdentifier = bonusFlagIdentifier
+		}
+		// Otherwise, it is another type of flag
+		// Here we can continue with a normal search
+	} else {
+		err = ctfCollection.FindOne(context.TODO(), bson.D{{Key: "flag", Value: flagIdentifier}}).Decode(&flag)
+	}
 	defer disconnect(ctfClient)
 
 	// 3. evaluate result
@@ -111,6 +139,10 @@ func addFlagToUser(w http.ResponseWriter, token, flagIdentifier, flagInput strin
 	}
 
 	// flag claimed successfully
-	runTemplate(w, createReturnDataStructure(token, "Claimed flag \""+flagInput+"\" successfully", ""))
+	successMessage := "Claimed flag \"" + flagInput + "\" successfully!"
+	if flag.Type == "bonus" {
+		successMessage = "Claimed flag \"" + flagInput + "\" successfully! Congratulations! You found a bonus flag!"
+	}
+	runTemplate(w, createReturnDataStructure(token, successMessage, ""))
 	defer disconnect(usersClient)
 }
