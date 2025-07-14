@@ -5,6 +5,7 @@ import (
 	"log"
 	"math"
 	"slices"
+	"strings"
 
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -93,6 +94,11 @@ func createReturnDataStructure(token, successMessage, errorMessage string) Index
 
 									// Check for each flag if the flag was collected
 									if slices.Contains(user.CollectedFlags, flag.Flag) {
+										// Truncate flag prefix
+										// The second line ensures we don't run into an error if there is no hypen (which never should be the case)
+										flagParts := strings.SplitAfterN(flag.Flag, "-", 2)
+										flag.Flag = flagParts[len(flagParts)-1]
+
 										switch flag.Type {
 										case "bash":
 											bashFlags = append(bashFlags, flag)
