@@ -67,7 +67,16 @@ func createReturnDataStructure(token, successMessage, errorMessage string) Index
 							numberOfCollectedSUASploitableFlags := 0
 							numberOfCollectedBonusFlags := 0
 							numberOfCollectedExamFlags := 0
+							knownFlags := []Flag{}
 							for _, flag := range allFlags {
+								// Check if we already know this flag
+								if slices.Contains(knownFlags, flag) {
+									continue
+								}
+
+								// Add flags to list of known flags
+								knownFlags = append(knownFlags, flag)
+
 								// Create union of flags and available flags for that user
 								if user.AvailableFlags != nil && slices.Contains(user.AvailableFlags, flag.Flag) {
 									// Count flags
