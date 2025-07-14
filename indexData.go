@@ -13,9 +13,11 @@ func createReturnDataStructure(token, successMessage, errorMessage string) Index
 	bashFlags := []Flag{}
 	suasploitableFlags := []Flag{}
 	bonusFlags := []Flag{}
+	examFlags := []Flag{}
 	var bashProgress float64 = 0.0
 	var suasploitableProgress float64 = 0.0
 	var bonusProgress float64 = 0.0
+	var examProgress = 0.0
 
 	// get uuid
 	uuid, success := getUuidFromToken(token)
@@ -60,9 +62,11 @@ func createReturnDataStructure(token, successMessage, errorMessage string) Index
 							numberOfBashFlags := 0
 							numberOfSUASploitableFlags := 0
 							numberOfBonusFlags := 0
+							numberOfExamFlags := 0
 							numberOfCollectedBashFlags := 0
 							numberOfCollectedSUASploitableFlags := 0
 							numberOfCollectedBonusFlags := 0
+							numberOfCollectedExamFlags := 0
 							for _, flag := range allFlags {
 								// Create union of flags and available flags for that user
 								if user.AvailableFlags != nil && slices.Contains(user.AvailableFlags, flag.Flag) {
@@ -74,6 +78,8 @@ func createReturnDataStructure(token, successMessage, errorMessage string) Index
 										numberOfSUASploitableFlags += 1
 									case "bonus":
 										numberOfBonusFlags += 1
+									case "exam":
+										numberOfExamFlags += 1
 									}
 
 									// Check for each flag if the flag was collected
@@ -88,6 +94,9 @@ func createReturnDataStructure(token, successMessage, errorMessage string) Index
 										case "bonus":
 											bonusFlags = append(bonusFlags, flag)
 											numberOfCollectedBonusFlags += 1
+										case "exam":
+											examFlags = append(examFlags, flag)
+											numberOfCollectedExamFlags += 1
 										}
 									}
 								}
@@ -102,6 +111,9 @@ func createReturnDataStructure(token, successMessage, errorMessage string) Index
 							}
 							if numberOfBonusFlags != 0 {
 								bonusProgress = (float64(numberOfCollectedBonusFlags) / float64(numberOfBonusFlags) * 100)
+							}
+							if numberOfExamFlags != 0 {
+								examProgress = (float64(numberOfCollectedExamFlags) / float64(numberOfExamFlags) * 100)
 							}
 						}
 					}
@@ -120,9 +132,11 @@ func createReturnDataStructure(token, successMessage, errorMessage string) Index
 		BashProgress:          int(math.RoundToEven(bashProgress)),
 		SUASploitableProgress: int(math.RoundToEven(suasploitableProgress)),
 		BonusProgress:         int(math.RoundToEven(bonusProgress)),
+		ExamProgress:          int(math.RoundToEven(examProgress)),
 		BashFlags:             bashFlags,
 		SUASploitableFlags:    suasploitableFlags,
 		BonusFlags:            bonusFlags,
+		ExamFlags:             examFlags,
 	}
 	return data
 }

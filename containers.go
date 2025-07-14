@@ -23,7 +23,9 @@ type IndexData struct {
 	BashProgress          int
 	SUASploitableProgress int
 	BonusProgress         int
+	ExamProgress          int
 	BashFlags             []Flag
 	SUASploitableFlags    []Flag
 	BonusFlags            []Flag
+	ExamFlags             []Flag
 }
