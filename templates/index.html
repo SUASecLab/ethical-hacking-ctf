@@ -1,6 +1,15 @@
 {{define "body"}}
 
 <body>
+    <nav class="navbar bg-body-tertiary">
+        <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+                <button class="btn btn-light" id="theme-switch" style="margin-right: 0.5em;">
+                    <img src="./static/brightness-high-fill.svg" alt="Enable light mode" width="48" height="48" style="padding: 0.5em;">
+                </button>
+            </li>
+        </ul>
+    </nav>
     <div class="container" style="margin-top:3rem;">
         <h1>capture the flag!</h1>
 
@@ -165,4 +174,24 @@
         </form>
     </div>
 </body>
+
+<script>
+    document.getElementById("theme-switch").addEventListener("click", () => {
+        if (document.documentElement.getAttribute("data-bs-theme") == "dark") {
+            // Enable light mode
+            document.documentElement.setAttribute("data-bs-theme", "light");
+            var toggle = document.getElementById("theme-switch");
+            toggle.innerHTML = '<img src="./static/moon-stars-fill.svg" alt="Enable dark mode" width="48" height="48">';
+            toggle.classList.remove("btn-light");
+            toggle.classList.add("btn-outline-secondary");
+       } else {
+            // Enable dark mode
+            document.documentElement.setAttribute("data-bs-theme", "dark");
+            var toggle = document.getElementById("theme-switch");
+            toggle.innerHTML = '<img src="./static/brightness-high-fill.svg" alt="Enable light mode" width="48" height="48">';
+            toggle.classList.remove("btn-outline-secondary");
+            toggle.classList.add("btn-light");
+        }
+    }) 
+</script>
 {{end}}
