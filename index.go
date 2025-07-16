@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"html"
 	"log"
 	"net/http"
 )
@@ -15,6 +16,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 
 		// authenticate user
 		token = r.URL.Query().Get("token")
+		token = html.EscapeString(token)
 		if !isAuthenticated(w, token) {
 			fmt.Fprint(w, "Can not authenticate user")
 			return
@@ -27,6 +29,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 
 		// authenticate user
 		token = r.FormValue("token")
+		token = html.EscapeString(token)
 		if !isAuthenticated(w, token) {
 			fmt.Fprint(w, "Can not authenticate user")
 			return
@@ -41,6 +44,12 @@ func index(w http.ResponseWriter, r *http.Request) {
 		// get input from parsed form
 		flagInput := r.FormValue("flagInput")
 		flagTypeSelect := r.FormValue("flagTypeSelect")
+
+		// escape input
+		flagInput = html.EscapeString(flagInput)
+		flagTypeSelect = html.EscapeString(flagTypeSelect)
+
+		// get flag identifier
 		flagIdentifier := flagTypeSelect + "-" + flagInput
 
 		// add flag to user account
