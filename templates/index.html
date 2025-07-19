@@ -176,10 +176,24 @@
 </body>
 
 <script>
+    // Get currently stored theme
+    let theme = localStorage.getItem("ctf_theme");
+    
+    // No or invalid theme stored
+    if ((theme == null) || ((theme != "light") && (theme != "dark"))) {
+        theme = "dark"
+        window.localStorage.setItem("ctf_theme", theme)
+    }
+
+    // Set theme
+    document.documentElement.setAttribute("data-bs-theme", theme);
+
+    // Allow changing theme
     document.getElementById("theme-switch").addEventListener("click", () => {
         if (document.documentElement.getAttribute("data-bs-theme") == "dark") {
             // Enable light mode
             document.documentElement.setAttribute("data-bs-theme", "light");
+            window.localStorage.setItem("ctf_theme", "light");
             var toggle = document.getElementById("theme-switch");
             toggle.innerHTML = '<img src="./static/moon-stars-fill.svg" alt="Enable dark mode" width="48" height="48">';
             toggle.classList.remove("btn-light");
@@ -187,6 +201,7 @@
        } else {
             // Enable dark mode
             document.documentElement.setAttribute("data-bs-theme", "dark");
+            window.localStorage.setItem("ctf_theme", "dark");
             var toggle = document.getElementById("theme-switch");
             toggle.innerHTML = '<img src="./static/brightness-high-fill.svg" alt="Enable light mode" width="48" height="48">';
             toggle.classList.remove("btn-outline-secondary");
